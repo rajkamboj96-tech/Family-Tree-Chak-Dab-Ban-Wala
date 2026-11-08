@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pa">
 <head>
 <meta charset="utf-8">
@@ -109,6 +109,7 @@ button.danger{border-color:#e2a5a0;color:#9c241b}
       <span id="savedinfo"></span>
       <button id="save" type="button" title="ਡਾਟਾ ਅਤੇ ਤਸਵੀਰਾਂ ਇਸ ਬ੍ਰਾਊਜ਼ਰ ਵਿੱਚ ਸੇਵ ਕਰੋ, ਤਾਂ ਜੋ ਅਗਲੀ ਵਾਰ ਫਾਈਲ ਨਾ ਚੁਣਨੀ ਪਵੇ">ਬ੍ਰਾਊਜ਼ਰ ਵਿੱਚ ਸੇਵ ਕਰੋ</button>
       <button id="del" class="danger" type="button" title="ਬ੍ਰਾਊਜ਼ਰ ਵਿੱਚ ਸੇਵ ਕੀਤਾ ਡਾਟਾ ਹਟਾਓ">ਸੇਵ ਕੀਤਾ ਡਾਟਾ ਹਟਾਓ</button>
+      <button id="refreshGh" type="button" title="GitHub ਤੋਂ ਨਵੀਂ ਐਕਸਲ ਫਾਈਲ ਲਿਆਓ">↻ GitHub ਤੋਂ ਤਾਜ਼ਾ</button>
       <button id="print" type="button">ਪ੍ਰਿੰਟ</button>
       <button id="reload" type="button">ਹੋਰ ਫਾਈਲ</button>
     </div>
@@ -120,11 +121,13 @@ button.danger{border-color:#e2a5a0;color:#9c241b}
 </header>
 
 <div id="loader">
-  <h2>ਐਕਸਲ ਫਾਈਲ ਚੁਣੋ (301.xlsx)</h2>
-  <p>ਸਾਰਾ ਡਾਟਾ ਅਤੇ ਤਸਵੀਰਾਂ ਇਸੇ ਫਾਈਲ ਵਿੱਚੋਂ ਪੜ੍ਹੀਆਂ ਜਾਣਗੀਆਂ। ਫਾਈਲ ਤੁਹਾਡੇ ਕੰਪਿਊਟਰ ਤੋਂ ਬਾਹਰ ਨਹੀਂ ਜਾਂਦੀ।</p>
-  <p>ਫਾਈਲ ਇੱਥੇ ਖਿੱਚ ਕੇ ਛੱਡੋ ਜਾਂ ਹੇਠਲਾ ਬਟਨ ਦਬਾਓ</p>
-  <button class="big" id="pick" type="button">ਫਾਈਲ ਚੁਣੋ…</button>
-  <div style="margin-top:12px"><button id="useSaved" type="button" hidden>ਬ੍ਰਾਊਜ਼ਰ ਵਿੱਚ ਸੇਵ ਕੀਤਾ ਡਾਟਾ ਵਰਤੋ</button></div>
+  <h2 id="loaderTitle">ਡਾਟਾ ਲੋਡ ਹੋ ਰਿਹਾ ਹੈ…</h2>
+  <p id="loaderMsg">ਸਾਰਾ ਡਾਟਾ ਅਤੇ ਤਸਵੀਰਾਂ ਬ੍ਰਾਊਜ਼ਰ ਵਿੱਚ ਹੀ ਪੜ੍ਹੀਆਂ ਜਾਣਗੀਆਂ। ਫਾਈਲ ਤੁਹਾਡੇ ਕੰਪਿਊਟਰ ਤੋਂ ਬਾਹਰ ਨਹੀਂ ਜਾਂਦੀ।</p>
+  <div id="loaderActions" hidden>
+    <p>ਫਾਈਲ ਇੱਥੇ ਖਿੱਚ ਕੇ ਛੱਡੋ ਜਾਂ ਹੇਠਲਾ ਬਟਨ ਦਬਾਓ</p>
+    <button class="big" id="pick" type="button">ਫਾਈਲ ਚੁਣੋ…</button>
+    <div style="margin-top:12px"><button id="useSaved" type="button" hidden>ਬ੍ਰਾਊਜ਼ਰ ਵਿੱਚ ਸੇਵ ਕੀਤਾ ਡਾਟਾ ਵਰਤੋ</button></div>
+  </div>
   <input type="file" id="file" accept=".xlsx,.xlsm" hidden>
 </div>
 
@@ -152,6 +155,14 @@ https://github.com/nodeca/pako/blob/main/LICENSE
 <script>
 (function(){
 "use strict";
+
+// ===== GitHub ਸੰਰਚਨਾ =====
+// GitHub 'ਤੇ ਰੱਖੀ ਐਕਸਲ ਫਾਈਲ ਦਾ ਨਾਮ ਇੱਥੇ ਦਿਓ।
+// ਫਾਈਲ index.html ਦੇ ਉਸੇ ਫੋਲਡਰ ਵਿੱਚ ਹੋਣੀ ਚਾਹੀਦੀ ਹੈ।
+const EXCEL_FILE = "301.xlsx";
+const EXCEL_FALLBACKS = ["Main (Chak Dab Ban Wal With Pics).xlsx"];
+// ==========================
+
 const $=s=>document.querySelector(s);
 const NS_R="http://schemas.openxmlformats.org/officeDocument/2006/relationships";
 const state={sheets:[],sheetIdx:0,infoCache:new Map(),fileName:"",saved:null,people:[],bySerial:new Map(),byHouse:new Map(),imgs:new Map(),houses:[]};
@@ -159,6 +170,11 @@ const PLACEHOLDER="data:image/svg+xml;utf8,"+encodeURIComponent('<svg xmlns="htt
 
 function status(t,err){const s=$("#status");s.textContent=t||"";s.className=err?"err":""}
 function el(tag,cls,txt){const e=document.createElement(tag);if(cls)e.className=cls;if(txt!=null)e.textContent=txt;return e}
+function setLoader(title,msg,showActions){
+  const t=$("#loaderTitle"); if(t) t.textContent = title || "ਡਾਟਾ ਲੋਡ ਹੋ ਰਿਹਾ ਹੈ…";
+  const m=$("#loaderMsg"); if(m && msg != null) m.textContent = msg;
+  const a=$("#loaderActions"); if(a) a.hidden = !showActions;
+}
 
 /* ---------- xlsx reading (JSZip only) ---------- */
 function parseXml(s){const d=new DOMParser().parseFromString(s,"application/xml");if(d.getElementsByTagName("parsererror").length)throw new Error("XML ਗਲਤੀ");return d}
@@ -463,9 +479,11 @@ const votersIn=sheets=>sheets.reduce((a,s)=>a+(s.kind==="voter"?s.people.length:
 async function refreshSaveUI(){
   try{state.saved=normSaved(await idbOp("readonly",s=>s.get("data")))}catch(e){state.saved=null}
   const sv=state.saved;
-  $("#savedinfo").textContent=sv?"ਸੇਵ ਕੀਤਾ: "+fmtDate(sv.savedAt)+" ("+sv.sheets.length+" ਸ਼ੀਟਾਂ, "+votersIn(sv.sheets)+" ਵੋਟਰ)":"ਬ੍ਰਾਊਜ਼ਰ ਵਿੱਚ ਕੁਝ ਸੇਵ ਨਹੀਂ";
-  $("#del").disabled=!sv;$("#useSaved").hidden=!sv;
-  $("#save").textContent=sv?"ਸੇਵ ਕੀਤਾ ਡਾਟਾ ਅੱਪਡੇਟ ਕਰੋ":"ਬ੍ਰਾਊਜ਼ਰ ਵਿੱਚ ਸੇਵ ਕਰੋ";
+  const si=$("#savedinfo"); if(si) si.textContent=sv?"ਸੇਵ ਕੀਤਾ: "+fmtDate(sv.savedAt)+" ("+sv.sheets.length+" ਸ਼ੀਟਾਂ, "+votersIn(sv.sheets)+" ਵੋਟਰ)":"ਬ੍ਰਾਊਜ਼ਰ ਵਿੱਚ ਕੁਝ ਸੇਵ ਨਹੀਂ";
+  const del=$("#del"), us=$("#useSaved"), sv2=$("#save");
+  if(del) del.disabled=!sv;
+  if(us) us.hidden=!sv;
+  if(sv2) sv2.textContent=sv?"ਸੇਵ ਕੀਤਾ ਡਾਟਾ ਅੱਪਡੇਟ ਕਰੋ":"ਬ੍ਰਾਊਜ਼ਰ ਵਿੱਚ ਸੇਵ ਕਰੋ";
 }
 async function saveToBrowser(){
   try{
@@ -504,15 +522,18 @@ async function loadFile(buf,label){
     state.sheets=buildSheets(await readWorkbook(buf));
     if(!state.sheets.length)throw new Error("ਫਾਈਲ ਵਿੱਚ ਕੋਈ ਸ਼ੀਟ ਨਹੀਂ ਮਿਲੀ");
     state.fileName=label||"";showApp(label||"ਫਾਈਲ");
-  }catch(e){console.error(e);status("ਗਲਤੀ: "+e.message,true)}
+  }catch(e){console.error(e);status("ਗਲਤੀ: "+e.message,true);setLoader("ਗਲਤੀ","ਫਾਈਲ ਪੜ੍ਹੀ ਨਹੀਂ ਜਾ ਸਕੀ: "+(e.message||e), true);}
 }
 const fileIn=$("#file");
-$("#pick").addEventListener("click",()=>fileIn.click());
-$("#reload").addEventListener("click",()=>{$("#app").hidden=true;$("#loader").hidden=false;$("#barwrap").hidden=true;fileIn.value=""});
-fileIn.addEventListener("change",async()=>{const f=fileIn.files[0];if(f)loadFile(await f.arrayBuffer(),f.name)});
+$("#pick") && $("#pick").addEventListener("click",()=>fileIn.click());
+$("#reload") && $("#reload").addEventListener("click",()=>{
+  $("#app").hidden=true;$("#loader").hidden=false;$("#barwrap").hidden=true;fileIn.value="";
+  setLoader("ਐਕਸਲ ਫਾਈਲ ਚੁਣੋ","ਸਾਰਾ ਡਾਟਾ ਅਤੇ ਤਸਵੀਰਾਂ ਬ੍ਰਾਊਜ਼ਰ ਵਿੱਚ ਹੀ ਪੜ੍ਹੀਆਂ ਜਾਣਗੀਆਂ। ਫਾਈਲ ਤੁਹਾਡੇ ਕੰਪਿਊਟਰ ਤੋਂ ਬਾਹਰ ਨਹੀਂ ਜਾਂਦੀ।",true);
+});
+fileIn && fileIn.addEventListener("change",async()=>{const f=fileIn.files[0];if(f)loadFile(await f.arrayBuffer(),f.name)});
 const ld=$("#loader");
-["dragenter","dragover"].forEach(ev=>document.addEventListener(ev,e=>{e.preventDefault();ld.classList.add("drag")}));
-["dragleave","drop"].forEach(ev=>document.addEventListener(ev,e=>{e.preventDefault();ld.classList.remove("drag")}));
+["dragenter","dragover"].forEach(ev=>document.addEventListener(ev,e=>{e.preventDefault();if(ld)ld.classList.add("drag")}));
+["dragleave","drop"].forEach(ev=>document.addEventListener(ev,e=>{e.preventDefault();if(ld)ld.classList.remove("drag")}));
 document.addEventListener("drop",async e=>{const f=e.dataTransfer.files[0];if(f)loadFile(await f.arrayBuffer(),f.name)});
 $("#sheet").addEventListener("change",e=>selectSheet(+e.target.value));
 $("#house").addEventListener("change",e=>selectHouse(e.target.value));
@@ -521,7 +542,7 @@ $("#next").addEventListener("click",()=>{const i=state.houses.indexOf(curHouse);
 $("#print").addEventListener("click",()=>window.print());
 $("#save").addEventListener("click",saveToBrowser);
 $("#del").addEventListener("click",removeFromBrowser);
-$("#useSaved").addEventListener("click",async()=>{if(!await loadSaved())status("ਸੇਵ ਕੀਤਾ ਡਾਟਾ ਨਹੀਂ ਮਿਲਿਆ",true)});
+$("#useSaved") && $("#useSaved").addEventListener("click",async()=>{if(!await loadSaved())status("ਸੇਵ ਕੀਤਾ ਡਾਟਾ ਨਹੀਂ ਮਿਲਿਆ",true)});
 $("#lb").addEventListener("click",()=>$("#lb").classList.remove("on"));
 document.addEventListener("keydown",e=>{if(e.key==="Escape")$("#lb").classList.remove("on")});
 $("#q").addEventListener("keydown",e=>{
@@ -532,14 +553,50 @@ $("#q").addEventListener("keydown",e=>{
   if(!hit)hit=state.people.find(p=>p.name.includes(q)||p.id.toLowerCase()===q.toLowerCase());
   if(hit)selectHouse(hit.house,hit.serial);else status("'"+q+"' ਨਹੀਂ ਮਿਲਿਆ",true);
 });
-// try auto-loading 301.xlsx when the page is served from a web server next to the file
+
+/* ---------- GitHub ਤੋਂ ਆਪੇ ਲੋਡ ---------- */
+async function tryFetchExcel(){
+  const names = [EXCEL_FILE, ...EXCEL_FALLBACKS];
+  for(const name of names){
+    try{
+      const r = await fetch(encodeURI(name), {cache:"no-cache"});
+      if(r.ok) return {buf: await r.arrayBuffer(), name};
+    }catch(e){ console.warn("fetch failed:", name, e); }
+  }
+  return null;
+}
+
 (async()=>{
   await refreshSaveUI();
-  if(await loadSaved())return;
+
+  // 1) ਬ੍ਰਾਊਜ਼ਰ ਵਿੱਚ ਸੇਵ ਡਾਟਾ — ਤੇਜ਼ ਲੋਡ (ਦੁਬਾਰਾ ਡਾਊਨਲੋਡ ਨਹੀਂ)
+  if(await loadSaved()) return;
+
+  // 2) ਬ੍ਰਾਊਜ਼ਰ ਖਾਲੀ — GitHub ਤੋਂ ਆਪੇ ਲਿਆਓ
   if(/^https?:/.test(location.protocol)){
-    fetch("301.xlsx").then(r=>r.ok?r.arrayBuffer():Promise.reject()).then(b=>loadFile(b,"301.xlsx")).catch(()=>{});
+    setLoader("GitHub ਤੋਂ ਡਾਟਾ ਲੋਡ ਹੋ ਰਿਹਾ ਹੈ…",
+      "ਪਹਿਲੀ ਵਾਰ ਭਾਰੀ ਫਾਈਲ ਡਾਊਨਲੋਡ ਹੋ ਰਹੀ ਹੈ। ਕੁਝ ਸਕਿੰਟ ਲੱਗ ਸਕਦੇ ਹਨ।", false);
+    const got = await tryFetchExcel();
+    if(got){ await loadFile(got.buf, got.name); return; }
+    setLoader("ਡਾਟਾ ਲੋਡ ਨਹੀਂ ਹੋ ਸਕਿਆ",
+      "GitHub 'ਤੇ ਫਾਈਲ ਦਾ ਨਾਮ ਜਾਂਚੋ ਜਾਂ ਹੇਠਾਂ ਫਾਈਲ ਚੁਣੋ।", true);
+    status("GitHub ਤੋਂ ਡਾਟਾ ਨਹੀਂ ਮਿਲਿਆ ('"+EXCEL_FILE+"')", true);
+    return;
   }
+
+  // 3) ਲੋਕਲ ਫਾਈਲ — ਆਮ ਫਾਈਲ ਚੋਣਕਰਤਾ
+  setLoader("ਐਕਸਲ ਫਾਈਲ ਚੁਣੋ", null, true);
 })();
+
+// "GitHub ਤੋਂ ਤਾਜ਼ਾ" ਬਟਨ
+$("#refreshGh") && $("#refreshGh").addEventListener("click", async ()=>{
+  if(!confirm("GitHub ਤੋਂ ਨਵੀਂ ਐਕਸਲ ਫਾਈਲ ਲਿਆਈ ਜਾਵੇ?\nਬ੍ਰਾਊਜ਼ਰ ਵਿੱਚ ਸੇਵ ਕੀਤਾ ਪੁਰਾਣਾ ਡਾਟਾ ਬਦਲ ਜਾਵੇਗਾ।")) return;
+  status("GitHub ਤੋਂ ਡਾਟਾ ਲਿਆਇਆ ਜਾ ਰਿਹਾ ਹੈ…");
+  const got = await tryFetchExcel();
+  if(got) await loadFile(got.buf, got.name);
+  else status("GitHub ਤੋਂ ਡਾਟਾ ਨਹੀਂ ਮਿਲਿਆ", true);
+});
+
 })();
 </script>
 </body>
