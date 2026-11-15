@@ -10,13 +10,14 @@
 :root{--bg:#f4f6f9;--panel:#fff;--ink:#1d2733;--muted:#66758a;--line:#8a97a8;--male:#2f6fb3;--female:#c2477f;--accent:#1f4e78}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:"Noto Sans Gurmukhi","Raavi","Mukta Mahee","Nirmala UI",system-ui,sans-serif;line-height:1.35}
-header{background:var(--accent);color:#fff;padding:6px 12px 8px}
-header h1{margin:0;font-size:1rem;font-weight:700;line-height:1.3}
-header h1 .sub{font-size:.72rem;font-weight:400;opacity:.85;margin-left:8px}
-#status{margin:3px 0 0;font-size:.72rem;color:#cfe0f0}
+header{background:var(--accent);color:#fff;padding:4px 12px;display:flex;flex-direction:column;gap:2px}
+.header-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;width:100%}
+.header-row h1{margin:0;font-size:1rem;font-weight:700;line-height:1.2;flex:1 1 auto}
+.header-row h1 .sub{font-size:.72rem;font-weight:400;opacity:.85;margin-left:8px}
+#status{margin:0;font-size:.72rem;color:#cfe0f0}
 #status.err{color:#ffd6d2;font-weight:600}
 #barwrap[hidden]{display:none}
-.bar{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:5px;font-size:.74rem}
+.bar{display:flex;flex-wrap:wrap;gap:4px 6px;align-items:center;font-size:.74rem;width:100%}
 .bar label{font-weight:600;font-size:.74rem}
 select,input[type=search],button{font:inherit;font-size:.90rem;padding:2px 6px;border:1px solid #b9c3d0;border-radius:6px;background:#fff;color:var(--ink);line-height:1.5}
 select{min-width:0;max-width:180px}
@@ -31,7 +32,7 @@ button:disabled{opacity:.4;cursor:default}
 #loader h2{margin:0 0 6px;font-size:1.1rem}
 #loader p{margin:6px 0;color:var(--muted)}
 #loader .big{margin-top:12px;background:var(--accent);color:#fff;border:0;padding:10px 20px;font-weight:600}
-.hmeta{display:flex;flex-wrap:wrap;gap:2px 16px;align-items:center;margin-top:4px}
+.hmeta{display:flex;flex-wrap:wrap;gap:2px 12px;align-items:center;margin-top:0;width:100%}
 #summary{font-weight:600;font-size:.74rem;color:#eef4fa}
 #summary small{font-weight:400;color:#c4d5e8}
 .legend{display:flex;gap:12px;font-size:.7rem;color:#d5e2f0}
@@ -57,11 +58,11 @@ button:disabled{opacity:.4;cursor:default}
 .tree li:only-child>.unit{margin-top:0}
 .unit{display:inline-flex;align-items:center;gap:0;vertical-align:top}
 .marry{align-self:center;padding:0 6px;color:#d0407f;font-size:1.25rem;line-height:1}
-.card{display:flex;gap:10px;width:228px;text-align:left;background:#fff;border:2px solid #c9d2de;border-left-width:6px;border-radius:12px;padding:8px;box-shadow:0 1px 4px rgba(0,0,0,.08)}
+.card{display:flex;gap:10px;width:200px;text-align:left;background:#fff;border:2px solid #c9d2de;border-left-width:6px;border-radius:12px;padding:8px;box-shadow:0 1px 4px rgba(0,0,0,.08)}
 .card.male{border-color:var(--male)}
 .card.female{border-color:var(--female)}
 .card.hl{outline:4px solid #ffcf3f}
-.ph{width:68px;height:80px;object-fit:cover;border-radius:7px;background:#e4e9ef;flex:none;cursor:zoom-in;border:1px solid #cfd7e1}
+.ph{width:68px;height:71px;object-fit:cover;border-radius:7px;background:#e4e9ef;flex:none;cursor:zoom-in;border:1px solid #cfd7e1}
 .info{min-width:0;font-size:.84rem}
 .nm{font-weight:700;font-size:.95rem;word-break:break-word}
 .rl{color:#3b4a5e}
@@ -86,8 +87,8 @@ button.danger{border-color:#e2a5a0;color:#9c241b}
 #lb.on{display:flex}
 #lb img{max-width:min(90vw,420px);max-height:70vh;border-radius:10px;background:#fff;image-rendering:auto}
 /* ਕਸਟਮ ਮਕਾਨ-ਕੰਬੋ (ਤਸਵੀਰਾਂ ਸਮੇਤ) */
-.combo{position:relative;display:inline-block;min-width:215px}
-.combo-btn{display:flex;align-items:center;gap:6px;width:100%;min-width:215px;text-align:left;
+.combo{position:relative;display:inline-block;min-width:215px;width:300px;max-width:100%}
+.combo-btn{display:flex;align-items:center;gap:6px;width:100%;min-width:0;text-align:left;
   background:#fff;border:1px solid #b9c3d0;border-radius:6px;padding:2px 6px;font:inherit;
   font-size:.9rem;line-height:1.5;color:var(--ink);cursor:pointer}
 .combo-btn:hover{background:#eef3f8}
@@ -108,13 +109,44 @@ button.danger{border-color:#e2a5a0;color:#9c241b}
   border:1px solid #cfd7e1;background:#e4e9ef;flex:none;display:block}
 .combo-tx{display:flex;flex-direction:column;min-width:0;line-height:1.25}
 .combo-tx small{color:var(--muted);font-weight:400;font-size:.74rem}
-@media print{header,.bar,#loader,#status,.legend{display:none!important}body{background:#fff}.scroll{overflow:visible}.block{border:0}}
+
+/* ਉੱਪਰਲੇ ਤਿੰਨ ਰੰਗ-ਬਰੰਗੇ ਬਟਨ */
+.top-actions{display:flex;align-items:center;gap:6px;margin-left:auto}
+.top-actions[hidden]{display:none}
+.top-actions button{
+  border-radius:8px;
+  padding:3px 8px;
+  font-size:.85rem;
+  font-weight:700;
+  border:1px solid transparent;
+  box-shadow:0 1px 3px rgba(0,0,0,.15);
+}
+#save{background:#198754;border-color:#146c43;color:#fff}
+#save:hover:not(:disabled){background:#157347}
+#del{background:#dc3545;border-color:#b02a37;color:#fff}
+#del:hover:not(:disabled){background:#bb2d3b}
+#refreshGh{background:#fd7e14;border-color:#ca6510;color:#fff}
+#refreshGh:hover:not(:disabled){background:#e36b0a}
+
+@media (max-width:560px){
+  .combo{width:100%;min-width:0}
+  .top-actions{width:100%;justify-content:flex-end;margin-top:4px}
+}
+
+@media print{header,.bar,.top-actions,#loader,#status,.legend{display:none!important}body{background:#fff}.scroll{overflow:visible}.block{border:0}}
 </style>
 </head>
 <body>
 <header>
-  <h1>ਵੋਟਰ ਸੂਚੀ – ਫੈਮਿਲੀ ਟਰੀ <span class="sub">ਮਕਾਨ ਨੰਬਰ ਚੁਣੋ ਅਤੇ ਉਸ ਘਰ ਦੇ ਪੂਰੇ ਪਰਿਵਾਰ ਨੂੰ ਤਸਵੀਰਾਂ ਸਮੇਤ ਦੇਖੋ</span></h1>
-  <div id="status"></div>
+  <div class="header-row">
+    <h1>ਵੋਟਰ ਸੂਚੀ – ਫੈਮਿਲੀ ਟਰੀ <span class="sub">ਮਕਾਨ ਨੰਬਰ ਚੁਣੋ ਅਤੇ ਉਸ ਘਰ ਦੇ ਪੂਰੇ ਪਰਿਵਾਰ ਨੂੰ ਤਸਵੀਰਾਂ ਸਮੇਤ ਦੇਖੋ</span></h1>
+    <div id="status"></div>
+    <div class="top-actions" id="topActions" hidden>
+      <button id="save" type="button" title="ਡਾਟਾ ਅਤੇ ਤਸਵੀਰਾਂ ਇਸ ਬ੍ਰਾਊਜ਼ਰ ਵਿੱਚ ਸੇਵ ਕਰੋ, ਤਾਂ ਜੋ ਅਗਲੀ ਵਾਰ ਫਾਈਲ ਨਾ ਚੁਣਨੀ ਪਵੇ">ਬ੍ਰਾਊਜ਼ਰ ਵਿੱਚ ਸੇਵ ਕਰੋ</button>
+      <button id="del" type="button" title="ਬ੍ਰਾਊਜ਼ਰ ਵਿੱਚ ਸੇਵ ਕੀਤਾ ਡਾਟਾ ਹਟਾਓ">ਸੇਵ ਕੀਤਾ ਡਾਟਾ ਹਟਾਓ</button>
+      <button id="refreshGh" type="button" title="GitHub ਤੋਂ ਨਵੀਂ ਐਕਸਲ ਫਾਈਲ ਲਿਆਓ">↻ GitHub ਤੋਂ ਤਾਜ਼ਾ</button>
+    </div>
+  </div>
 
   <div id="barwrap" hidden>
     <div class="bar">
@@ -135,11 +167,7 @@ button.danger{border-color:#e2a5a0;color:#9c241b}
         <button id="next" type="button" title="ਅਗਲਾ ਮਕਾਨ">▶</button>
         <input type="search" id="q" placeholder="ਨਾਮ ਜਾਂ ਲੜੀ ਨੰ. ਲੱਭੋ">
       </span>
-      <span class="sp"></span>
-      <span id="savedinfo"></span>
-      <button id="save" type="button" title="ਡਾਟਾ ਅਤੇ ਤਸਵੀਰਾਂ ਇਸ ਬ੍ਰਾਊਜ਼ਰ ਵਿੱਚ ਸੇਵ ਕਰੋ, ਤਾਂ ਜੋ ਅਗਲੀ ਵਾਰ ਫਾਈਲ ਨਾ ਚੁਣਨੀ ਪਵੇ">ਬ੍ਰਾਊਜ਼ਰ ਵਿੱਚ ਸੇਵ ਕਰੋ</button>
-      <button id="del" class="danger" type="button" title="ਬ੍ਰਾਊਜ਼ਰ ਵਿੱਚ ਸੇਵ ਕੀਤਾ ਡਾਟਾ ਹਟਾਓ">ਸੇਵ ਕੀਤਾ ਡਾਟਾ ਹਟਾਓ</button>
-      <button id="refreshGh" type="button" title="GitHub ਤੋਂ ਨਵੀਂ ਐਕਸਲ ਫਾਈਲ ਲਿਆਓ">↻ GitHub ਤੋਂ ਤਾਜ਼ਾ</button>
+      <span id="savedinfo" style="margin-left:auto;"></span>
       <button id="print" type="button">ਪ੍ਰਿੰਟ</button>
       <button id="reload" type="button">ਹੋਰ ਫਾਈਲ</button>
     </div>
@@ -167,15 +195,6 @@ button.danger{border-color:#e2a5a0;color:#9c241b}
 
 <div id="lb"><img id="lbimg" alt=""><div id="lbcap"></div><div style="opacity:.7;font-size:.85rem">ਬੰਦ ਕਰਨ ਲਈ ਕਲਿੱਕ ਕਰੋ</div></div>
 
-<script>
-/*!
-JSZip v3.10.1 - A JavaScript class for generating and reading zip files
-<http://stuartk.com/jszip>
-(c) 2009-2016 Stuart Knightley <stuart [at] stuartk.com>
-Dual licenced under the MIT license or GPLv3.
-JSZip uses the library pako released under the MIT license.
-*/
-</script>
 <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
 <script>
 (function(){
@@ -360,8 +379,7 @@ function buildUnits(mem){
   return {units,roots,idx};
 }
 
-/* ---------- house head + photo (FIXED) ---------- */
-// The head person of a house = first root unit's first member.
+/* ---------- house head + photo ---------- */
 function headOfHouse(h){
   const mem=state.byHouse.get(h)||[];
   if(!mem.length) return null;
@@ -369,11 +387,9 @@ function headOfHouse(h){
   const u = (roots.length ? roots : units)[0];
   return u && u.members[0] ? u.members[0] : null;
 }
-// Photo of the head, with fallback to any member who has a photo in this house.
 function headPhotoOf(h){
   const head=headOfHouse(h);
   if(head && head.img) return head.img;
-  // fallback: first member (in this house) that actually has a photo
   const mem=state.byHouse.get(h)||[];
   const withPhoto=mem.find(p=>p.img);
   return withPhoto ? withPhoto.img : PLACEHOLDER;
@@ -456,7 +472,6 @@ function fillSelect(){
     const item=el("button","combo-item");
     item.type="button";item.dataset.house=h;item.setAttribute("role","option");
     const im=el("img","thumb");im.alt="";
-    // IMPORTANT: no lazy loading here (popup may be hidden at first)
     im.src=headPhotoOf(h);
     const tx=el("span","combo-tx");
     tx.append(el("b","",h===""?"(ਬਿਨਾਂ ਨੰਬਰ)":h));
@@ -475,7 +490,12 @@ function updateHouseBtn(){
 }
 function markHouseSelected(){
   for(const it of $("#housePop").children)
-    it.setAttribute("aria-selected",it.dataset.house===curHouse?"true":"false");
+    it.setAttribute("aria-selected", it.dataset.house === curHouse ? "true" : "false");
+
+  if(!$("#housePop").hidden){
+    const s = $("#housePop").querySelector('[aria-selected="true"]');
+    if(s) s.scrollIntoView({block:"nearest"});
+  }
 }
 function openPop(){
   $("#housePop").hidden=false;$("#houseBtn").setAttribute("aria-expanded","true");
@@ -493,6 +513,14 @@ function selectHouse(h,serial){
   $("#prev").disabled=i<=0;$("#next").disabled=i>=state.houses.length-1;
   updateHouseBtn();markHouseSelected();
   render();
+}
+function moveHouse(delta){
+  const i = state.houses.indexOf(curHouse);
+  if(i < 0) return;
+  const j = i + delta;
+  if(j >= 0 && j < state.houses.length){
+    selectHouse(state.houses[j]);
+  }
 }
 function fillSheets(){
   const sel=$("#sheet");sel.replaceChildren();
@@ -584,6 +612,7 @@ async function loadSaved(){
 function showApp(label,idx){
   const imgs=state.sheets.reduce((a,s)=>a+(s.kind==="voter"?s.people.filter(p=>p.blob).length:0),0);
   fillSheets();$("#loader").hidden=true;$("#app").hidden=false;$("#barwrap").hidden=false;
+  $("#topActions").hidden=false; // ਤਿੰਨੇ ਰੰਗ-ਬਰੰਗੇ ਬਟਨ ਦਿਖਾਓ
   status(label+": "+state.sheets.length+" ਸ਼ੀਟਾਂ, "+votersIn(state.sheets)+" ਵੋਟਰ, "+imgs+" ਤਸਵੀਰਾਂ");
   let first=Number.isInteger(idx)&&state.sheets[idx]?idx:state.sheets.findIndex(s=>s.kind==="voter");
   if(first<0)first=0;
@@ -600,7 +629,7 @@ async function loadFile(buf,label){
 const fileIn=$("#file");
 $("#pick") && $("#pick").addEventListener("click",()=>fileIn.click());
 $("#reload") && $("#reload").addEventListener("click",()=>{
-  $("#app").hidden=true;$("#loader").hidden=false;$("#barwrap").hidden=true;fileIn.value="";
+  $("#app").hidden=true;$("#loader").hidden=false;$("#barwrap").hidden=true;$("#topActions").hidden=true;fileIn.value="";
   setLoader("ਐਕਸਲ ਫਾਈਲ ਚੁਣੋ","ਸਾਰਾ ਡਾਟਾ ਅਤੇ ਤਸਵੀਰਾਂ ਬ੍ਰਾਊਜ਼ਰ ਵਿੱਚ ਹੀ ਪੜ੍ਹੀਆਂ ਜਾਣਗੀਆਂ। ਫਾਈਲ ਤੁਹਾਡੇ ਕੰਪਿਊਟਰ ਤੋਂ ਬਾਹਰ ਨਹੀਂ ਜਾਂਦੀ।",true);
 });
 fileIn && fileIn.addEventListener("change",async()=>{const f=fileIn.files[0];if(f)loadFile(await f.arrayBuffer(),f.name)});
@@ -611,8 +640,8 @@ document.addEventListener("drop",async e=>{const f=e.dataTransfer.files[0];if(f)
 $("#sheet").addEventListener("change",e=>selectSheet(+e.target.value));
 $("#houseBtn").addEventListener("click",e=>{e.stopPropagation();togglePop()});
 document.addEventListener("click",e=>{if(!e.target.closest(".combo"))closePop()});
-$("#prev").addEventListener("click",()=>{const i=state.houses.indexOf(curHouse);if(i>0)selectHouse(state.houses[i-1])});
-$("#next").addEventListener("click",()=>{const i=state.houses.indexOf(curHouse);if(i<state.houses.length-1)selectHouse(state.houses[i+1])});
+$("#prev").addEventListener("click",()=>moveHouse(-1));
+$("#next").addEventListener("click",()=>moveHouse(1));
 $("#print").addEventListener("click",()=>window.print());
 $("#save").addEventListener("click",saveToBrowser);
 $("#del").addEventListener("click",removeFromBrowser);
@@ -627,6 +656,24 @@ $("#q").addEventListener("keydown",e=>{
   if(!hit)hit=state.people.find(p=>p.name.includes(q)||p.id.toLowerCase()===q.toLowerCase());
   if(hit)selectHouse(hit.house,hit.serial);else status("'"+q+"' ਨਹੀਂ ਮਿਲਿਆ",true);
 });
+
+/* ---------- ਦੂਜੇ ਕੰਬੋ ਲਈ arrow keys ---------- */
+function onHouseArrow(e){
+  const k = e.key;
+  if(k !== "ArrowDown" && k !== "ArrowRight" &&
+     k !== "ArrowUp" && k !== "ArrowLeft") return;
+
+  if(!e.target.closest("#houseBtn, #housePop")) return;
+
+  e.preventDefault();
+  e.stopPropagation();
+
+  moveHouse((k === "ArrowDown" || k === "ArrowRight") ? 1 : -1);
+  $("#houseBtn").focus();
+}
+
+$("#houseBtn").addEventListener("keydown", onHouseArrow);
+$("#housePop").addEventListener("keydown", onHouseArrow);
 
 /* ---------- GitHub ਤੋਂ ਆਪੇ ਲੋਡ ---------- */
 async function tryFetchExcel(){
